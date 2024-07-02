@@ -15,7 +15,7 @@ return !snapshot.empty;
 };
 
 // Register function
-export const register = async (username, email, password, firstName, lastName) => {
+window.register = async (username, email, password, firstName, lastName) => {
     try {
     if (await isUsernameTaken(username)) {
         throw new Error('Username is already taken');
