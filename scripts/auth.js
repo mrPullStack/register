@@ -7,59 +7,55 @@ import { app } from "./app"; // Import the initialized Firebase app from app.js
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Check if username is already taken
+const isUsernameTaken = async (username) => {
+const usersRef = db.collection('users');
+const snapshot = await usersRef.where('username', '==', username).get();
+return !snapshot.empty;
+};
+
 // Register function
-const register = (username, email, password, firstName, lastName) => {
-    auth.createUserWithEmailAndPassword(email, password)
-    .then(userCredential => {
-            const user = userCredential.user;
-            return db.collection('users').doc(user.uid).set({
-                username: username,
-                email: email,
-                firstName: firstName,
-                lastName: lastName
-            });
-        })
-    .then(() => {
-            console.log('User registered');
-        })
-    .catch(error => {
-            console.error('Error registering user:', error);
-        });
+export const register = async (username, email, password, firstName, lastName) => {
+    try {
+    if (await isUsernameTaken(username)) {
+        throw new Error('Username is already taken');
+    }
+    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+    await db.collection('users').doc(user.uid).set({
+        username: username,
+        email: email,
+        firstName: firstName,
+        lastName: lastName
+    });
+    console.log('User registered');
+    return user;
+} catch (error) {
+    console.error('Error registering user:', error);
+    throw error; // Rethrow the error to the caller
+}
 };
 
 // Login function
-const login = (username, password) => {
-    // First, find the user's email associated with the username
-    db.collection('users').where('username', '==', username).get()
-    .then(querySnapshot => {
-            if (querySnapshot.empty) {
-                console.error('User not found');
-                return;
-            }
-            const userDoc = querySnapshot.docs[0];
-            const email = userDoc.data().email;
-            // Now, sign in with the email and password
-            auth.signInWithEmailAndPassword(email, password)
-            .then(userCredential => {
-                    const user = userCredential.user;
-                    console.log('User logged in:', user);
-                })
-            .catch(error => {
-                    console.error('Error logging in:', error);
-                });
-        })
-    .catch(error => {
-        console.error('Error finding user:', error);
-        });
+const login = async (email, password) => {
+    try {
+    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+    console.log('User logged in:', user);
+    return user;
+} catch (error) {
+    console.error('Error logging in:', error);
+    throw error; // Rethrow the error to the caller
+    }
 };
 
 // Logout function
-const logout = () => {
-    auth.signOut()
-    .then(() => {
-            console.log('User logged out');
-        })
-    .catch(error => {
-            console.error('Error logging out:', error);
-        });
+const logout = async () => {
+    try {
+    await auth.signOut();
+    console.log('User logged out');
+} catch (error) {
+    console.error('Error logging out:', error);
+    throw error; // Rethrow the error to the caller
+    } 
 };
