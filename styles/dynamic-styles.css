@@ -1,0 +1,17 @@
+/* Default color scheme */
+body {
+    background-color: white;
+    color: black;
+}
+
+/* Color scheme 1 */
+body.color-scheme-1 {
+    background-color: lightblue;
+    color: darkblue;
+}
+
+/* Color scheme 2 */
+body.color-scheme-2 {
+    background-color: lightgreen;
+    color: darkgreen;
+}
