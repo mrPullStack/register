@@ -9,25 +9,64 @@
     <script src="scripts/auth.js" defer></script>
 </head>
 <body>
-    <h1>Register</h1>
-    <form id="registerForm">
-        <label for="email">Email:</label>
-        <input type="email" id="email" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" required><br>
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" required><br>
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" required><br>
-        <button type="button" onclick="registerUser()">Register</button>
-    </form>
+    <div class="container">
+        <div class="register-form">
+            <h1>Register</h1>
+            <form id="registerForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" required><br>
+                <label for="email">Email:</label>
+                <input type="email" id="email" required><br>
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" required><br>
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" required><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" required><br>
+                <button type="button" onclick="registerUser()">Sign up</button>
+                <p>Already have an account? <a href="login.html">Log in</a></p>
+            </form>
+        </div>
+    </div>
     <script>
         function registerUser() {
+            const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
             const firstName = document.getElementById('firstName').value;
             const lastName = document.getElementById('lastName').value;
-            register(email, password, firstName, lastName);
+            const password = document.getElementById('password').value;
+            register(username, email, firstName, lastName, password);
+        }
+            // Validate the form
+        function validateForm(username, email, firstName, lastName, password) {
+            let isValid = true;
+
+            // Check if username is empty
+            if (username.trim() === '') {
+                alert('Username is required');
+                isValid = false;
+            }
+
+            // Check if email is valid
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(email)) {
+                alert('Invalid email address');
+                isValid = false;
+            }
+
+            // Check if first name and last name are empty
+            if (firstName.trim() === '' || lastName.trim() === '') {
+                alert('First name and last name are required');
+                isValid = false;
+            }
+
+            // Check if password is strong enough
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                alert('Password must be at least 8 characters, contain uppercase and lowercase letters, numbers, and special characters');
+                isValid = false;
+            }
+            return isValid;
         }
     </script>
 </body>
