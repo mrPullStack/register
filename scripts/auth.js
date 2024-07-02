@@ -1,3 +1,12 @@
+// Import Firebase functions
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { app } from "./app"; // Import the initialized Firebase app from app.js
+
+// Initialize Firebase Auth and Firestore
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 // Register function
 const register = (email, password, firstName, lastName) => {
     auth.createUserWithEmailAndPassword(email, password)
